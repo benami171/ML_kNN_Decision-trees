@@ -50,6 +50,8 @@ def calculate_error(y_true, y_pred):
     return np.mean(y_true != y_pred)*100
 
 
+
+# splitting the data each time
 def evaluate_knn_parameters(X, y, k_values=[1, 3, 5, 7, 9], p_values=[1, 2, np.inf], n_iterations=100):
     """
     Evaluate k-NN classifier with different parameters over multiple iterations.
@@ -96,20 +98,79 @@ def evaluate_knn_parameters(X, y, k_values=[1, 3, 5, 7, 9], p_values=[1, 2, np.i
     
     return results
 
+# doesnt split the data each time
+def evaluate_knn_parameters_2(X, y, k_values=[1, 3, 5, 7, 9], p_values=[1, 2, np.inf], n_iterations=100):
+    """
+    Evaluate k-NN classifier with different parameters using consistent data splits.
+    """
+    results = {(k, p): {'train_errors': [], 'test_errors': []} 
+              for k in k_values for p in p_values}
+    
+
+    for iteration in range(n_iterations):
+        # Create one split for this iteration
+        
+        X_train, y_train, X_test, y_test = split_train_test(X, y)
+
+        # Test all parameter combinations on this split
+        for k in k_values:
+            for p in p_values:
+                y_train_pred = k_nearest_neighbors(X_train, y_train, X_train, k, p)
+                y_test_pred = k_nearest_neighbors(X_train, y_train, X_test, k, p)
+                
+                train_error = calculate_error(y_train, y_train_pred)
+                test_error = calculate_error(y_test, y_test_pred)
+                
+                results[(k, p)]['train_errors'].append(train_error)
+                results[(k, p)]['test_errors'].append(test_error)
+    
+    # Calculate final averages
+    final_results = {}
+    for params, errors in results.items():
+        final_results[params] = {
+            'avg_train_error': np.mean(errors['train_errors']),
+            'avg_test_error': np.mean(errors['test_errors']),
+            'error_difference': np.mean(errors['test_errors']) - np.mean(errors['train_errors'])
+        }
+    
+    return final_results
+
+def print_results(results):
+    """
+    Print results in the required format with proper alignment.
+    """
+   
+    print("\t  Train Error\tTest Error\tDifference")
+    print("-" * 50)
+    for p in [1, 2, float('inf')]:
+        print("")
+        for k in [1, 3, 5, 7, 9]:
+            p_str = 'inf' if p == float('inf') else f'{p:.1f}'
+            key = (k, p)
+            if key in results:
+                metrics = results[key]
+                
+                # Convert from percentage and format with proper spacing
+                train_error = metrics['avg_train_error'] / 100
+                test_error = metrics['avg_test_error'] / 100
+                diff = metrics['error_difference'] / 100
+                
+                # Use a consistent width for the p:value k:value section
+                label = f"p:{p_str} k:{k}"
+                
+                # Format with proper spacing and alignment
+                print(f"{label:<12} {train_error:>10.8f}    {test_error:>10.8f}    {diff:>10.8f}")
+
 def main():
+
     # Load data
     X, y = load_versicolor_virginica()
     
     # Run evaluation
-    results = evaluate_knn_parameters(X, y)
+    results = evaluate_knn_parameters_2(X, y)
     
-    # Print results
-    print("\nResults for different k and p values:")
-    print("k\tp\tTrain Error\tTest Error\tDifference")
-    print("-" * 50)
-    
-    for (k, p), metrics in results.items():
-        print(f"{k}\t{p}\t{metrics['avg_train_error']:.2f}%\t\t{metrics['avg_test_error']:.2f}%\t\t{metrics['error_difference']:.2f}%")
+    print_results(results)
+
 
 if __name__ == "__main__":
     main()
