@@ -168,9 +168,7 @@ def main():
     
     # Run evaluation
     results = evaluate_knn_parameters_2(X, y)
-    
     print_results(results)
-
 
 if __name__ == "__main__":
     main()
