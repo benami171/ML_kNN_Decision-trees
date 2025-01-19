@@ -1,0 +1,47 @@
+digraph {
+	rankdir=TB
+	2304982833104 [label="Feature 0
+Threshold: 2.550
+Level: 0"]
+	2304982833104 -> 2304971633552 [label=True]
+	2304971633552 [label="Feature 0
+Threshold: 2.100
+Level: 1"]
+	2304971633552 -> 2304971629264 [label=True]
+	2304971629264 [label="Leaf: -1
+Level: 2"]
+	2304971633552 -> 2304971632592 [label=False]
+	2304971632592 [label="Feature 1
+Threshold: 4.950
+Level: 2"]
+	2304971632592 -> 2304971632464 [label=True]
+	2304971632464 [label="Leaf: -1
+Level: 3"]
+	2304971632592 -> 2304971632528 [label=False]
+	2304971632528 [label="Leaf: 1
+Level: 3"]
+	2304982833104 -> 2304972157648 [label=False]
+	2304972157648 [label="Feature 0
+Threshold: 3.050
+Level: 1"]
+	2304972157648 -> 2304972116112 [label=True]
+	2304972116112 [label="Feature 1
+Threshold: 4.750
+Level: 2"]
+	2304972116112 -> 2304972115984 [label=True]
+	2304972115984 [label="Leaf: -1
+Level: 3"]
+	2304972116112 -> 2304972116048 [label=False]
+	2304972116048 [label="Leaf: 1
+Level: 3"]
+	2304972157648 -> 2304972120720 [label=False]
+	2304972120720 [label="Feature 1
+Threshold: 5.000
+Level: 2"]
+	2304972120720 -> 2304972119824 [label=True]
+	2304972119824 [label="Leaf: -1
+Level: 3"]
+	2304972120720 -> 2304972120656 [label=False]
+	2304972120656 [label="Leaf: 1
+Level: 3"]
+}

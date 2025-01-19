@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
-from graphviz import Digraph
+import matplotlib.pyplot as plt
 
 @dataclass
 class Node:
@@ -33,45 +33,39 @@ def calculate_error(node: Node, X: np.ndarray, y: np.ndarray) -> float:
     predictions = np.array([predict(node, x) for x in X])
     return np.mean(predictions != y)
 
-def find_split_points(X: np.ndarray) -> List[Tuple[int, float]]:
-    """Finds all possible split points for both features"""
-    split_points = []
-    for feature_idx in [0, 1]:
-        values = sorted(set(X[:, feature_idx]))
-        thresholds = [(a + b) / 2 for a, b in zip(values[:-1], values[1:])]
-        split_points.extend((feature_idx, threshold) for threshold in thresholds)
-    return split_points
-
 def build_trees(X: np.ndarray, y: np.ndarray, max_level: int, current_level: int = 0) -> List[Node]:
     """Builds all possible valid decision trees up to max_level"""
-    trees = []
-    
     # Base cases
     if current_level >= max_level or len(set(y)) == 1:
         return [Node(label=1 if np.mean(y) >= 0 else -1, level=current_level)]
 
-    # Try all possible splits
-    for feature_idx, threshold in find_split_points(X):
-        left_mask = X[:, feature_idx] <= threshold
-        right_mask = ~left_mask
+    trees = []
+    # Find split points for both features
+    for feature_idx in [0, 1]:
+        values = sorted(set(X[:, feature_idx]))
+        thresholds = [(a + b) / 2 for a, b in zip(values[:-1], values[1:])]
         
-        if not (np.any(left_mask) and np.any(right_mask)):
-            continue
-        
-        # Build subtrees recursively
-        left_trees = build_trees(X[left_mask], y[left_mask], max_level, current_level + 1)
-        right_trees = build_trees(X[right_mask], y[right_mask], max_level, current_level + 1)
-        
-        # Create all valid combinations
-        for left in left_trees:
-            for right in right_trees:
-                trees.append(Node(
-                    feature_idx=feature_idx,
-                    threshold=threshold,
-                    left=left,
-                    right=right,
-                    level=current_level
-                ))
+        for threshold in thresholds:
+            left_mask = X[:, feature_idx] <= threshold
+            right_mask = ~left_mask
+            
+            if not (np.any(left_mask) and np.any(right_mask)):
+                continue
+            
+            # Build subtrees recursively
+            left_trees = build_trees(X[left_mask], y[left_mask], max_level, current_level + 1)
+            right_trees = build_trees(X[right_mask], y[right_mask], max_level, current_level + 1)
+            
+            # Create all valid combinations
+            for left in left_trees:
+                for right in right_trees:
+                    trees.append(Node(
+                        feature_idx=feature_idx,
+                        threshold=threshold,
+                        left=left,
+                        right=right,
+                        level=current_level
+                    ))
     
     return trees
 
@@ -81,38 +75,82 @@ def find_best_tree(X: np.ndarray, y: np.ndarray, k: int) -> Tuple[Node, float]:
     return min(((tree, calculate_error(tree, X, y)) for tree in trees), 
               key=lambda x: x[1])
 
-def visualize_tree(node: Node, dot=None) -> Digraph:
-    """Creates a visual representation of the decision tree"""
-    if dot is None:
-        dot = Digraph()
-        dot.attr(rankdir='TB')
+def plot_tree(node: Node, ax=None, x=0.5, y=1.0, width=1.0):
+    """Plots the hierarchical structure of the decision tree"""
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis('off')
     
-    node_id = str(id(node))
-    if node.label is not None:
-        dot.node(node_id, f'Leaf: {node.label}\nLevel: {node.level}')
-    else:
-        dot.node(node_id, f'Feature {node.feature_idx}\nThreshold: {node.threshold:.3f}\nLevel: {node.level}')
+    # Draw current node
+    circle = plt.Circle((x, y), 0.02, color='white', ec='black')
+    ax.add_patch(circle)
     
-    if node.left:
-        dot.edge(node_id, str(id(node.left)), 'True')
-        visualize_tree(node.left, dot)
-    if node.right:
-        dot.edge(node_id, str(id(node.right)), 'False')
-        visualize_tree(node.right, dot)
+    # Add node text
+    text = f'Label: {node.label}' if node.label is not None else f'X[{node.feature_idx}] ≤ {node.threshold:.2f}'
+    ax.text(x, y + 0.02, text, ha='center', va='bottom')
     
-    return dot
+    # Draw children if they exist
+    if node.left or node.right:
+        child_y = y - 0.2
+        if node.left:
+            left_x = x - width/4
+            ax.plot([x, left_x], [y, child_y], 'k-')
+            plot_tree(node.left, ax, left_x, child_y, width/2)
+        if node.right:
+            right_x = x + width/4
+            ax.plot([x, right_x], [y, child_y], 'k-')
+            plot_tree(node.right, ax, right_x, child_y, width/2)
+    
+    return ax
+
+def plot_decision_boundary(tree: Node, X: np.ndarray, y: np.ndarray, ax=None):
+    """Plots the decision boundaries and training data points"""
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Set up the mesh grid
+    margin = 0.5
+    x_min, x_max = X[:, 0].min() - margin, X[:, 0].max() + margin
+    y_min, y_max = X[:, 1].min() - margin, X[:, 1].max() + margin
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100),
+                        np.linspace(y_min, y_max, 100))
+    
+    # Make predictions
+    Z = np.array([predict(tree, np.array([x, y])) 
+                 for x, y in zip(xx.ravel(), yy.ravel())])
+    Z = Z.reshape(xx.shape)
+    
+    # Plot decision boundary and points
+    ax.contourf(xx, yy, Z, alpha=0.4, cmap='RdBu')
+    ax.scatter(X[y == -1, 0], X[y == -1, 1], c='blue', label='Versicolor')
+    ax.scatter(X[y == 1, 0], X[y == 1, 1], c='red', label='Virginica')
+    ax.set_xlabel('Feature 0')
+    ax.set_ylabel('Feature 1')
+    ax.legend()
+    return ax
 
 def main():
-    # Load and prepare data
+    print("Loading data...")
     X, y = load_versicolor_virginica()
     
-    # Find optimal tree
+    print("Finding best decision tree...")
     best_tree, error = find_best_tree(X, y, k=3)
     print(f"Best tree error rate: {error:.4f}")
     
-    # Visualize result
-    dot = visualize_tree(best_tree)
-    dot.render("decision_tree", view=True, format="png")
+    print("Creating visualizations...")
+    # Create tree structure visualization
+    fig1, ax1 = plt.subplots(figsize=(12, 8))
+    plot_tree(best_tree, ax1)
+    ax1.set_title("Decision Tree Structure")
+    
+    # Create decision boundary visualization
+    fig2, ax2 = plt.subplots(figsize=(8, 6))
+    plot_decision_boundary(best_tree, X, y, ax2)
+    ax2.set_title("Decision Boundary")
+    
+    plt.show(block=True)
 
 if __name__ == "__main__":
     main()
