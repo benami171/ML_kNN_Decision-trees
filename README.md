@@ -4,21 +4,21 @@ A comprehensive machine learning project implementing and comparing Decision Tre
 
 ## 📑 Table of Contents
 
-- [🎯 Project Overview](#project-overview)
-- [✨ Key Features](#key-features)
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
 - [📂 Project Structure](#project-structure)
-- [⚙️ Installation](#installation)
+- [Installation](#installation)
 - [📊 Results and Analysis](#results-and-analysis)
   - [k-NN Performance Analysis](#k-nn-performance-analysis)
   - [Decision Tree Comparison](#decision-tree-comparison)
-- [🚀 Usage](#usage)
+- [Usage](#usage)
 - [🔬 Technical Details](#technical-details)
   - [Implemented Algorithms](#implemented-algorithms)
   - [Performance Metrics](#performance-metrics)
 - [🤝 Contributing](#contributing)
 - [📄 License](#license)
 
-## 🎯 Project Overview
+## Project Overview
 
 This project implements and analyzes two fundamental machine learning algorithms:
 1. k-Nearest Neighbors (k-NN) with various distance metrics
@@ -26,7 +26,7 @@ This project implements and analyzes two fundamental machine learning algorithms
 
 The implementation uses the Iris dataset, specifically focusing on distinguishing between Versicolor and Virginica species using only their second and third features.
 
-## ✨ Key Features
+## Key Features
 
 - **Advanced k-NN Implementation**:
   - Multiple k values (1, 3, 5, 7, 9)
@@ -57,7 +57,7 @@ The implementation uses the Iris dataset, specifically focusing on distinguishin
 └── visualization.py      # Visualization tools
 ```
 
-## ⚙️ Installation
+## Installation
 
 1. **Clone the repository**:
    ```bash
@@ -108,7 +108,7 @@ Two decision tree implementations were compared:
 ![Decision Tree Structures](results/decision_tree_figure1_visualization.png)
 ![Decision Boundaries](results/decision_tree_figure2_visualization.png)
 
-## 🚀 Usage
+## Usage
 
 Run the main analysis script:
 ```bash
