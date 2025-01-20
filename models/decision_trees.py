@@ -138,14 +138,28 @@ class DecisionTreeEntropy:
         left_mask = X[:, feature_idx] <= threshold
         right_mask = ~left_mask
         
+        # Create child nodes
+        left_node = self._build_tree(X[left_mask], y[left_mask], current_level + 1)
+        right_node = self._build_tree(X[right_mask], y[right_mask], current_level + 1)
+        
+        # Check if both children are leaves with the same label
+        if (left_node.label is not None and 
+            right_node.label is not None and 
+            left_node.label == right_node.label):
+            # If they have the same label, return a single leaf node
+            return Node(
+                label=left_node.label,
+                level=current_level
+            )
+        
+        # Otherwise, create the split node
         node = Node(
             feature_idx=feature_idx,
             threshold=threshold,
             level=current_level
         )
-        
-        node.left = self._build_tree(X[left_mask], y[left_mask], current_level + 1)
-        node.right = self._build_tree(X[right_mask], y[right_mask], current_level + 1)
+        node.left = left_node
+        node.right = right_node
         
         return node
 
