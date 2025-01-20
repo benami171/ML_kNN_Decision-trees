@@ -61,7 +61,7 @@ Here you can see the error percentage we got from the kNN and the decision tree 
 ![kNN Visualization](results/k-NN_errors.png)
 
 ### Decision Tree Errors (Brute Force & Binary Entropy)
-![Decision Tree Errors](results/results/decision_tree_errors.png)
+![Decision Tree Errors](results/decision_tree_errors.png)
 
 
 ## Contributing
