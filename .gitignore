@@ -1,0 +1,38 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# IDE and editor files
+*.swp
+*.swo
+*.DS_Store
+*.idea/
+.vscode/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Test and coverage reports
+.coverage
+*.cover
+nosetests.xml
+coverage.xml
+*.log
+
+# Other files to ignore
+*.bak
+*.tmp
