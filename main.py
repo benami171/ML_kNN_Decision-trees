@@ -4,6 +4,7 @@ on the Iris dataset binary classification task.
 """
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 from data_utils import load_versicolor_virginica
 from metrics import evaluate_model_parameters
 from models.decision_trees import DecisionTreeBruteForce, DecisionTreeEntropy
@@ -86,8 +87,13 @@ def main():
     run_knn_analysis(X, y)
 
     # Run decision tree analysis
+    start_time = time.strftime('%H:%M:%S', time.localtime())
+    print(f"\nStart running time: {start_time}") 
     run_decision_tree_comparison(X, y, k=3)
-    
+    end_time = time.strftime('%H:%M:%S', time.localtime())
+    print(f"\nEnd running time: {end_time}") 
+    print(f"\nTotal execution time: {end_time - start_time:.2f} seconds")
+
 
 if __name__ == "__main__":
     main()
