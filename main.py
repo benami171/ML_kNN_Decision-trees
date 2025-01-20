@@ -82,11 +82,12 @@ def main():
     X, y = load_versicolor_virginica()
     print(f"Dataset loaded: {X.shape[0]} samples, {X.shape[1]} features")
     
+    # Run k-NN analysis
+    run_knn_analysis(X, y)
+
     # Run decision tree analysis
     run_decision_tree_comparison(X, y, k=3)
     
-    # Run k-NN analysis
-    run_knn_analysis(X, y)
 
 if __name__ == "__main__":
     main()
