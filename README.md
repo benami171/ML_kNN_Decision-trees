@@ -87,9 +87,9 @@ The k-NN implementation was tested with various parameters:
 > 💡 **Key Findings**:
 > - Higher k values generally resulted in more stable predictions
 > - L2 distance metric showed slightly better performance
-> - Best performance achieved with k=5 using L2 distance
+> - Best performance achieved with k=9 using L2 distance
 
-![k-NN Error Analysis](results/k-NN_errors.png)
+![k-NN Error Analysis](results/k-NN_errors1.png)
 
 ### Decision Tree Comparison
 
