@@ -97,13 +97,9 @@ Two decision tree implementations were compared:
 
 1. **Brute-Force Approach** 🔍:
    - Error rate: 4.00%
-   - More complex tree structure
-   - Potentially better fitted to training data
 
 2. **Entropy-Based Approach** 🎯:
    - Error rate: 6.00%
-   - Simpler tree structure
-   - More generalizable decision boundaries
 
 ![Decision Tree Structures](results/decision_tree_figure1_visualization.png)
 ![Decision Boundaries](results/decision_tree_figure2_visualization.png)
