@@ -89,7 +89,7 @@ The k-NN implementation was tested with various parameters:
 > - L2 distance metric showed slightly better performance
 > - Best performance achieved with k=9 using L2 distance
 
-![k-NN Error Analysis](results/k-NN_errors3.png)
+![k-NN Error Analysis](results/k-NN_errors3.PNG)
 
 ### Decision Tree Comparison
 
