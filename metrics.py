@@ -6,7 +6,8 @@ from typing import Union, Dict, Tuple
 
 def calculate_binary_entropy(y: np.ndarray) -> float:
     """
-    Calculate the binary entropy of a set of binary labels.
+    Calculate the binary entropy of a set of binary labels using direct probability
+    calculation.
     
     Args:
         y: Array of binary labels (-1 and 1)
@@ -25,15 +26,21 @@ def calculate_binary_entropy(y: np.ndarray) -> float:
 
 def calculate_split_entropy(y_left: np.ndarray, y_right: np.ndarray) -> float:
     """
-    Calculate the weighted sum of entropies for a binary split.
+    Calculate the weighted sum of entropies for a binary split with pure node checks.
     
     Args:
         y_left: Labels for left split
         y_right: Labels for right split
     
     Returns:
-        float: Weighted sum of binary entropies
+        float: Weighted sum of binary entropies or infinity for invalid splits
     """
+    if len(y_left) == 0 or len(y_right) == 0:
+        return float('inf')
+        
+    if len(set(y_left)) == 1 or len(set(y_right)) == 1:
+        return float('inf')
+    
     total_samples = len(y_left) + len(y_right)
     weight_left = len(y_left) / total_samples
     weight_right = len(y_right) / total_samples

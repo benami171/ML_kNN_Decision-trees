@@ -89,8 +89,6 @@ def main():
     # Run decision tree analysis
     run_decision_tree_comparison(X, y, k=3)
 
-   
-
 
 if __name__ == "__main__":
     main()

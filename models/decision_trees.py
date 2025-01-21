@@ -102,8 +102,8 @@ class DecisionTreeEntropy:
             thresholds = [(a + b) / 2 for a, b in zip(values[:-1], values[1:])]
             
             for threshold in thresholds:
-                left_mask = X[:, feature_idx] <= threshold
-                right_mask = ~left_mask
+                left_mask = X[:, feature_idx] <= threshold 
+                right_mask = ~left_mask # Invert the mask
                 
                 if not (np.any(left_mask) and np.any(right_mask)):
                     continue
