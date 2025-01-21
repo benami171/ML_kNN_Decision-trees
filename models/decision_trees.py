@@ -34,55 +34,83 @@ class Node:
                 else self.right.predict(x))
 
 class DecisionTreeBruteForce:
-    """Decision tree implementation using brute-force approach."""
-    
     def __init__(self, max_depth: int = 3):
         self.max_depth = max_depth
         self.root = None
-
-    def _build_trees(self, X: np.ndarray, y: np.ndarray, current_level: int = 0) -> List[Node]:
-        """Build all possible valid decision trees up to max_depth."""
-        if current_level >= self.max_depth or len(set(y)) == 1:
-            return [Node(label=1 if np.mean(y) >= 0 else -1, level=current_level)]
-
-        trees = []
+        
+    def _get_possible_splits(self, X: np.ndarray) -> List[Tuple[int, float]]:
+        """Generate all possible splits for each feature."""
+        splits = []
         for feature_idx in range(X.shape[1]):
             values = sorted(set(X[:, feature_idx]))
-            thresholds = [(a + b) / 2 for a, b in zip(values[:-1], values[1:])]
+            thresholds = [(values[i] + values[i+1])/2 for i in range(len(values)-1)]
+            splits.extend([(feature_idx, threshold) for threshold in thresholds])
+        return splits
+
+    def _generate_all_trees(self, X: np.ndarray, y: np.ndarray, depth: int = 0) -> List[Node]:
+        """Generate all possible valid trees recursively."""
+        # Base case: if max depth reached or pure node, return leaf
+        if depth >= self.max_depth or len(set(y)) == 1:
+            return [Node(label=1 if np.mean(y) >= 0.5 else -1, level=depth)]
+
+        trees = []
+        # Always consider leaf node as an option
+        trees.append(Node(label=1 if np.mean(y) >= 0.5 else -1, level=depth))
+        
+        # Try every possible split
+        splits = self._get_possible_splits(X)
+        for feature_idx, threshold in splits:
+            # Split data
+            left_mask = X[:, feature_idx] <= threshold
+            right_mask = ~left_mask
             
-            for threshold in thresholds:
-                left_mask = X[:, feature_idx] <= threshold
-                right_mask = ~left_mask
+            # Skip invalid splits
+            if not (np.any(left_mask) and np.any(right_mask)):
+                continue
                 
-                if not (np.any(left_mask) and np.any(right_mask)):
-                    continue
-                
-                left_trees = self._build_trees(X[left_mask], y[left_mask], current_level + 1)
-                right_trees = self._build_trees(X[right_mask], y[right_mask], current_level + 1)
-                
-                for left in left_trees:
-                    for right in right_trees:
-                        trees.append(Node(
-                            feature_idx=feature_idx,
-                            threshold=threshold,
-                            left=left,
-                            right=right,
-                            level=current_level
-                        ))
+            # Generate all possible left and right subtrees
+            left_trees = self._generate_all_trees(X[left_mask], y[left_mask], depth + 1)
+            right_trees = self._generate_all_trees(X[right_mask], y[right_mask], depth + 1)
+            
+            # Create all possible combinations
+            for left_tree in left_trees:
+                for right_tree in right_trees:
+                    # Skip if both children are leaves with same label
+                    if (left_tree.label is not None and 
+                        right_tree.label is not None and 
+                        left_tree.label == right_tree.label):
+                        continue
+                        
+                    node = Node(
+                        feature_idx=feature_idx,
+                        threshold=threshold,
+                        left=left_tree,
+                        right=right_tree,
+                        level=depth
+                    )
+                    trees.append(node)
         
         return trees
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> Tuple[Node, float]:
-        """Find the best decision tree using brute force approach."""
-        trees = self._build_trees(X, y)
+        """Find the best decision tree using true brute force approach."""
+        # Generate all possible trees
+        all_trees = self._generate_all_trees(X, y)
         
-        def tree_error(tree: Node) -> float:
+        # Find the tree with minimum error
+        best_error = float('inf')
+        best_tree = None
+        
+        for tree in all_trees:
             predictions = np.array([tree.predict(x) for x in X])
-            return np.mean(predictions != y)
+            error = np.mean(predictions != y)
+            
+            if error < best_error:
+                best_error = error
+                best_tree = tree
         
-        self.root, error = min(((tree, tree_error(tree)) for tree in trees), 
-                             key=lambda x: x[1])
-        return self.root, error
+        self.root = best_tree
+        return self.root, best_error
 
 class DecisionTreeEntropy:
     """Decision tree implementation using entropy-based splitting."""
