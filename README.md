@@ -101,7 +101,7 @@ Two decision tree implementations were compared:
    - Potentially better fitted to training data
 
 2. **Entropy-Based Approach** 🎯:
-   - Error rate: 7.00%
+   - Error rate: 6.00%
    - Simpler tree structure
    - More generalizable decision boundaries
 
