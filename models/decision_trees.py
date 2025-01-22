@@ -34,7 +34,7 @@ class Node:
                 else self.right.predict(x))
 
 class DecisionTreeBruteForce:
-    def __init__(self, max_depth: int = 3):
+    def __init__(self, max_depth: int = 2):
         self.max_depth = max_depth
         self.root = None
         
@@ -115,7 +115,7 @@ class DecisionTreeBruteForce:
 class DecisionTreeEntropy:
     """Decision tree implementation using entropy-based splitting."""
     
-    def __init__(self, max_depth: int = 3):
+    def __init__(self, max_depth: int = 2):
         self.max_depth = max_depth
         self.root = None
 

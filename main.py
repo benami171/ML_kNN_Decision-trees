@@ -11,7 +11,7 @@ from models.decision_trees import DecisionTreeBruteForce, DecisionTreeEntropy
 from models.knn import evaluate_knn_parameters
 from visualization import plot_tree, plot_decision_boundary
 
-def run_decision_tree_comparison(X: np.ndarray, y: np.ndarray, k: int = 3) -> None:
+def run_decision_tree_comparison(X: np.ndarray, y: np.ndarray, k: int = 2) -> None:
     """
     Compare brute-force and entropy-based decision tree approaches.
     
@@ -87,7 +87,7 @@ def main():
     run_knn_analysis(X, y)
 
     # Run decision tree analysis
-    run_decision_tree_comparison(X, y, k=3)
+    run_decision_tree_comparison(X, y, k=2)
 
 
 if __name__ == "__main__":
