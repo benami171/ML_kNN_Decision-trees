@@ -52,11 +52,11 @@ class DecisionTreeBruteForce:
         # Base case: if max depth reached or pure node, return leaf
 
         if depth >= self.max_depth or len(set(y)) == 1:
-            return [Node(label=1 if np.mean(y) >= 0.5 else -1, level=depth)]
+            return [Node(label=1 if np.mean(y) >= 0.5 else 0, level=depth)]
 
         trees = []
         # Always consider leaf node as an option
-        trees.append(Node(label=1 if np.mean(y) >= 0.5 else -1, level=depth))
+        trees.append(Node(label=1 if np.mean(y) >= 0.5 else 0, level=depth))
         
         # Try every possible split
         splits = self._get_possible_splits(X)
@@ -158,7 +158,7 @@ class DecisionTreeEntropy:
             len(set(y)) == 1 or 
             len(y) == 0):
             return Node(
-                label=1 if np.mean(y) >= 0 else -1,
+                label=1 if np.mean(y) >= 0.5 else 0,
                 level=current_level
             )
         
@@ -166,7 +166,7 @@ class DecisionTreeEntropy:
         
         if feature_idx is None:  # If no good split is found
             return Node(
-                label=1 if np.mean(y) >= 0 else -1,
+                label=1 if np.mean(y) >= 0.5 else 0,
                 level=current_level
             )
         

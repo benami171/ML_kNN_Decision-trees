@@ -34,7 +34,7 @@ class KNearestNeighbors:
             nearest_labels = self.y_train[nearest_indices]
             
             # Make prediction by majority vote
-            predictions.append(np.sign(np.sum(nearest_labels)))
+            predictions.append(1 if np.mean(nearest_labels) > 0.5 else 0)
         return np.array(predictions)
 
 def evaluate_knn_parameters(X: np.ndarray, y: np.ndarray, 

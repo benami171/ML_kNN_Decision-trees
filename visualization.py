@@ -74,7 +74,7 @@ def plot_decision_boundary(tree: Node, X: np.ndarray, y: np.ndarray,
     Z = Z.reshape(xx.shape)
     
     ax.contourf(xx, yy, Z, alpha=0.4, cmap='RdBu')
-    ax.scatter(X[y == -1, 0], X[y == -1, 1], c='blue', label='Versicolor')
+    ax.scatter(X[y == 0, 0], X[y == 0, 1], c='blue', label='Versicolor')
     ax.scatter(X[y == 1, 0], X[y == 1, 1], c='red', label='Virginica')
     ax.set_xlabel('Feature 0')
     ax.set_ylabel('Feature 1')

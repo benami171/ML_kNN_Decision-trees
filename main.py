@@ -35,15 +35,6 @@ def run_decision_tree_comparison(X: np.ndarray, y: np.ndarray, k: int = 2) -> No
     entropy_root, entropy_error = entropy_tree.fit(X, y)
     print(f"Entropy-based tree error rate: {entropy_error:.4f}")
     
-    # Visualize results
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
-    
-    # Tree structures
-    plot_tree(bf_root, ax1)
-    ax1.set_title("Brute-Force Tree Structure")
-    
-    plot_tree(entropy_root, ax2)
-    ax2.set_title("Entropy-Based Tree Structure")
     
     # Decision boundaries
     fig2, (ax3, ax4) = plt.subplots(1, 2, figsize=(16, 6))
@@ -53,6 +44,16 @@ def run_decision_tree_comparison(X: np.ndarray, y: np.ndarray, k: int = 2) -> No
     
     plot_decision_boundary(entropy_root, X, y, ax4)
     ax4.set_title("Entropy-Based Decision Boundary")
+
+    # Visualize results
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
+    
+    # Tree structures
+    plot_tree(bf_root, ax1)
+    ax1.set_title("Brute-Force Tree Structure")
+    
+    plot_tree(entropy_root, ax2)
+    ax2.set_title("Entropy-Based Tree Structure")
     
     plt.show()
 
@@ -83,8 +84,8 @@ def main():
     X, y = load_versicolor_virginica()
     print(f"Dataset loaded: {X.shape[0]} samples, {X.shape[1]} features")
     
-    # # Run k-NN analysis
-    # run_knn_analysis(X, y)
+    # Run k-NN analysis
+    run_knn_analysis(X, y)
 
     # Run decision tree analysis
     run_decision_tree_comparison(X, y, k=3)
