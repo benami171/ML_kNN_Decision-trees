@@ -59,7 +59,7 @@ def calculate_classification_error(y_true: np.ndarray, y_pred: np.ndarray) -> fl
     Returns:
         float: Error rate percentage
     """
-    return np.mean(y_true != y_pred) * 100
+    return np.mean(y_true != y_pred) * 100 # Error rate as percentage
 
 def evaluate_model_parameters(results: Dict[Tuple[int, float], Dict]) -> None:
     """

@@ -89,7 +89,7 @@ The k-NN implementation was tested with various parameters:
 > - L2 distance metric showed slightly better performance
 > - Best performance achieved with k=9 using L2 distance
 
-![k-NN Error Analysis](results/k-NN_errors3.PNG)
+![k-NN Error Analysis](results/k-NN_errors1.png)
 
 ### Decision Tree Comparison
 
@@ -99,7 +99,7 @@ Two decision tree implementations were compared:
    - Error rate: 4.00%
 
 2. **Entropy-Based Approach** 🎯:
-   - Error rate: 6.00%
+   - Error rate: 7.00%
 
 ![Decision Tree Structures](results/decision_tree_figure1_visualization.png)
 ![Decision Boundaries](results/decision_tree_figure2_visualization.png)

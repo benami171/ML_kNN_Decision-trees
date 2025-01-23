@@ -24,9 +24,16 @@ class KNearestNeighbors:
         """Predict labels for test instances."""
         predictions = []
         for x in X:
-            distances = np.linalg.norm(self.X_train - x, ord=self.p, axis=1)
+            # Calculate distances between test point x and all training points
+            distances = np.linalg.norm(self.X_train - x, ord=self.p, axis=1) 
+            
+            # Get indices of k nearest neighbors
             nearest_indices = np.argsort(distances)[:self.k]
+            
+            # Get labels of k nearest neighbors
             nearest_labels = self.y_train[nearest_indices]
+            
+            # Make prediction by majority vote
             predictions.append(np.sign(np.sum(nearest_labels)))
         return np.array(predictions)
 

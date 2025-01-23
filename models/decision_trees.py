@@ -47,9 +47,10 @@ class DecisionTreeBruteForce:
             splits.extend([(feature_idx, threshold) for threshold in thresholds])
         return splits
 
-    def _generate_all_trees(self, X: np.ndarray, y: np.ndarray, depth: int = 0) -> List[Node]:
+    def _generate_all_trees(self, X: np.ndarray, y: np.ndarray, depth: int = 1) -> List[Node]:
         """Generate all possible valid trees recursively."""
         # Base case: if max depth reached or pure node, return leaf
+
         if depth >= self.max_depth or len(set(y)) == 1:
             return [Node(label=1 if np.mean(y) >= 0.5 else -1, level=depth)]
 
@@ -121,31 +122,37 @@ class DecisionTreeEntropy:
 
     def _find_best_split(self, X: np.ndarray, y: np.ndarray) -> Tuple[Optional[int], Optional[float], float]:
         """Find the best split that minimizes binary entropy."""
-        best_entropy = float('inf')
-        best_feature = None
-        best_threshold = None
+        best_entropy = float('inf')  # Initialize best_entropy to infinity
+        best_feature = None  # Variable to store the index of the best feature
+        best_threshold = None  # Variable to store the best threshold for the split
         
+        # Iterate over each feature in the dataset
         for feature_idx in range(X.shape[1]):
-            values = sorted(set(X[:, feature_idx]))
+            values = sorted(set(X[:, feature_idx]))  # Get unique sorted values for the feature
+            # Calculate potential thresholds as midpoints between consecutive values
             thresholds = [(a + b) / 2 for a, b in zip(values[:-1], values[1:])]
             
+            # Evaluate each threshold for the current feature
             for threshold in thresholds:
-                left_mask = X[:, feature_idx] <= threshold 
-                right_mask = ~left_mask # Invert the mask
+                left_mask = X[:, feature_idx] <= threshold  # Mask for left split
+                right_mask = ~left_mask  # Invert the mask for right split
                 
+                # Skip if either split is empty
                 if not (np.any(left_mask) and np.any(right_mask)):
                     continue
                     
+                # Calculate the entropy of the split
                 split_entropy = calculate_split_entropy(y[left_mask], y[right_mask])
                 
+                # Update best split if the current one has lower entropy
                 if split_entropy < best_entropy:
-                    best_entropy = split_entropy
-                    best_feature = feature_idx
-                    best_threshold = threshold
+                    best_entropy = split_entropy  # Update best entropy
+                    best_feature = feature_idx  # Update best feature index
+                    best_threshold = threshold  # Update best threshold
         
-        return best_feature, best_threshold, best_entropy
+        return best_feature, best_threshold, best_entropy  # Return the best feature, threshold, and entropy
 
-    def _build_tree(self, X: np.ndarray, y: np.ndarray, current_level: int = 0) -> Node:
+    def _build_tree(self, X: np.ndarray, y: np.ndarray, current_level: int = 1) -> Node:
         """Build a decision tree using entropy-based splitting."""
         if (current_level >= self.max_depth or 
             len(set(y)) == 1 or 
@@ -157,7 +164,7 @@ class DecisionTreeEntropy:
         
         feature_idx, threshold, _ = self._find_best_split(X, y)
         
-        if feature_idx is None:
+        if feature_idx is None:  # If no good split is found
             return Node(
                 label=1 if np.mean(y) >= 0 else -1,
                 level=current_level
