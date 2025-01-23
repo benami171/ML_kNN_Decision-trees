@@ -42,23 +42,22 @@ class DecisionTreeBruteForce:
         """Generate all possible splits for each feature."""
         splits = []
         for feature_idx in range(X.shape[1]):
-            values = sorted(set(X[:, feature_idx]))
-            thresholds = [(values[i] + values[i+1])/2 for i in range(len(values)-1)]
-            splits.extend([(feature_idx, threshold) for threshold in thresholds])
+            # Use actual coordinate values as potential splits
+            values = sorted(X[:, feature_idx])
+            splits.extend([(feature_idx, value) for value in values])
         return splits
 
     def _generate_all_trees(self, X: np.ndarray, y: np.ndarray, depth: int = 1) -> List[Node]:
         """Generate all possible valid trees recursively."""
-        # Base case: if max depth reached or pure node, return leaf
-
         if depth >= self.max_depth or len(set(y)) == 1:
-            return [Node(label=1 if np.mean(y) >= 0.5 else 0, level=depth)]
+            # Use majority vote for leaf nodes
+            return [Node(label=1 if np.sum(y) > len(y)/2 else 0, level=depth)]
 
         trees = []
-        # Always consider leaf node as an option
-        trees.append(Node(label=1 if np.mean(y) >= 0.5 else 0, level=depth))
+        # Always consider leaf node as an option with majority vote
+        trees.append(Node(label=1 if np.sum(y) > len(y)/2 else 0, level=depth))
         
-        # Try every possible split
+        # Try every possible split using actual coordinate values
         splits = self._get_possible_splits(X)
         for feature_idx, threshold in splits:
             # Split data
