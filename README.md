@@ -96,7 +96,7 @@ The k-NN implementation was tested with various parameters:
 Two decision tree implementations were compared:
 
 1. **Brute-Force Approach** 🔍:
-   - Error rate: 4.00%
+   - Error rate: 5.00%
 
 2. **Entropy-Based Approach** 🎯:
    - Error rate: 7.00%
